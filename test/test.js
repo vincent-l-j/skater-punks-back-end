@@ -6,6 +6,7 @@ describe("Skater Punks", function () {
   const tokenSymbol = "SP";
   const cost = hre.ethers.utils.parseEther("0.01");
   const maxSupply = 10000;
+  const maxAmountPerTx = 1;
 
   it("Should deploy the contract successfully", async function () {
     const SkaterPunksFactory = await ethers.getContractFactory("SkaterPunks");
@@ -14,6 +15,7 @@ describe("Skater Punks", function () {
       tokenSymbol,
       cost,
       maxSupply,
+      maxAmountPerTx,
     );
     await SkaterPunks.deployed();
 

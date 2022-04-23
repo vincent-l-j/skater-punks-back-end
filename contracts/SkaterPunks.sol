@@ -12,20 +12,24 @@ contract SkaterPunks is ERC721A, Ownable {
 
     uint256 public cost;
     uint256 public maxSupply;
+    uint256 public maxMintAmountPerTx;
 
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
         uint256 _cost,
-        uint256 _maxSupply
+        uint256 _maxSupply,
+        uint256 _maxMintAmountPerTx
     ) ERC721A(_tokenName, _tokenSymbol) {
         cost = _cost;
         maxSupply = _maxSupply;
+        maxMintAmountPerTx = _maxMintAmountPerTx;
     }
 
     /// @notice Check that the mint amount is valid
     modifier mintCompliance(uint256 _mintAmount) {
         require(_mintAmount > 0, "SkaterPunks: Invalid mint amount!");
+        require(_mintAmount <= maxMintAmountPerTx, "SkaterPunks: Max mint amount per transaction exceeded!");
         require(totalSupply() + _mintAmount <= maxSupply, "SkaterPunks: Max supply exceeded!");
         _;
     }
@@ -50,6 +54,11 @@ contract SkaterPunks is ERC721A, Ownable {
     /// @notice Set the cost
     function setCost(uint256 _cost) public onlyOwner {
         cost = _cost;
+    }
+
+    /// @notice Set the max mint amount per transaction
+    function setMaxMintAmountPerTx(uint256 _maxMintAmountPerTx) public onlyOwner {
+        maxMintAmountPerTx = _maxMintAmountPerTx;
     }
 
     /// @notice Set base URI
