@@ -47,6 +47,11 @@ contract SkaterPunks is ERC721A, Ownable {
         return string(abi.encodePacked(uriPrefix, Strings.toString(_tokenId), uriSuffix));
     }
 
+    /// @notice Set the cost
+    function setCost(uint256 _cost) public onlyOwner {
+        cost = _cost;
+    }
+
     /// @notice Set base URI
     function setUriPrefix(string memory _uriPrefix) public onlyOwner {
         uriPrefix = _uriPrefix;
