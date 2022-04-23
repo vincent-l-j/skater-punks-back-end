@@ -14,6 +14,8 @@ contract SkaterPunks is ERC721A, Ownable {
     uint256 public maxSupply;
     uint256 public maxMintAmountPerTx;
 
+    bool public paused = true;
+
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
@@ -42,6 +44,8 @@ contract SkaterPunks is ERC721A, Ownable {
 
     /// @notice Mint `_mintAmount` tokens for `msg.sender`
     function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
+        require(!paused, "SkaterPunks: The contract is paused");
+
         _safeMint(_msgSender(), _mintAmount);
     }
 
@@ -59,6 +63,11 @@ contract SkaterPunks is ERC721A, Ownable {
     /// @notice Set the max mint amount per transaction
     function setMaxMintAmountPerTx(uint256 _maxMintAmountPerTx) public onlyOwner {
         maxMintAmountPerTx = _maxMintAmountPerTx;
+    }
+
+    /// @notice Pause or unpause the contract
+    function setPaused(bool _state) public onlyOwner {
+        paused = _state;
     }
 
     /// @notice Set base URI
