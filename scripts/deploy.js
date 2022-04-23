@@ -1,20 +1,16 @@
 const hre = require("hardhat");
 
-async function main() {
-  const tokenName = "Skater Punks";
-  const tokenSymbol = "SP";
-  const cost = hre.ethers.utils.parseEther("0.01");
-  const maxSupply = 10000;
-  const maxAmountPerTx = 1;
+const Config = require("../config/config");
 
+async function main() {
   // We get the contract to deploy
   const SkaterPunksFactory = await hre.ethers.getContractFactory("SkaterPunks");
   const SkaterPunks = await SkaterPunksFactory.deploy(
-    tokenName,
-    tokenSymbol,
-    cost,
-    maxSupply,
-    maxAmountPerTx,
+    Config.tokenName,
+    Config.tokenSymbol,
+    Config.cost,
+    Config.maxSupply,
+    Config.maxMintAmountPerTx,
   );
   await SkaterPunks.deployed();
   console.log("SkaterPunks deployed to:", SkaterPunks.address);
