@@ -6,6 +6,7 @@ describe("Collection NFT", function () {
   const tokenSymbol = "SP";
   const cost = hre.ethers.utils.parseEther("0.01");
   const maxSupply = 10000;
+  const maxAmountPerTx = 1;
 
   it("Should deploy the contract successfully", async function () {
     const CollectionNFTFactory = await ethers.getContractFactory("CollectionNFT");
@@ -14,6 +15,7 @@ describe("Collection NFT", function () {
       tokenSymbol,
       cost,
       maxSupply,
+      maxAmountPerTx,
     );
     await CollectionNFT.deployed();
 

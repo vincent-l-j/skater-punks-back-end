@@ -5,6 +5,7 @@ async function main() {
   const tokenSymbol = "SP";
   const cost = hre.ethers.utils.parseEther("0.01");
   const maxSupply = 10000;
+  const maxAmountPerTx = 1;
 
   // We get the contract to deploy
   const CollectionNFTFactory = await hre.ethers.getContractFactory("CollectionNFT");
@@ -13,6 +14,7 @@ async function main() {
     tokenSymbol,
     cost,
     maxSupply,
+    maxAmountPerTx,
   );
   await CollectionNFT.deployed();
   console.log("CollectionNFT deployed to:", CollectionNFT.address);
