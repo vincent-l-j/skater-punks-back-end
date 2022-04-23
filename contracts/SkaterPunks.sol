@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SkaterPunks is ERC721A, Ownable {
 
+    string public uriPrefix = "";
+    string public uriSuffix = ".json";
+
     uint256 public cost;
     uint256 public maxSupply;
 
@@ -36,6 +39,22 @@ contract SkaterPunks is ERC721A, Ownable {
     /// @notice Mint `_mintAmount` tokens for `msg.sender`
     function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
         _safeMint(_msgSender(), _mintAmount);
+    }
+
+    /// @notice Return the token URI if the token exists
+    function tokenURI(uint256 _tokenId) public view override returns (string memory) {
+        require(_exists(_tokenId), "SkaterPunks: URI query for nonexistent token");
+        return string(abi.encodePacked(uriPrefix, Strings.toString(_tokenId), uriSuffix));
+    }
+
+    /// @notice Set base URI
+    function setUriPrefix(string memory _uriPrefix) public onlyOwner {
+        uriPrefix = _uriPrefix;
+    }
+
+    /// @notice Set the file extension
+    function setUriSuffix(string memory _uriSuffix) public onlyOwner {
+        uriSuffix = _uriSuffix;
     }
 
     /// @notice Withdraw the remaining contract balance to the owner
