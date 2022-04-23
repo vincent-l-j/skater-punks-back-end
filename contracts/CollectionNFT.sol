@@ -37,4 +37,10 @@ contract CollectionNFT is ERC721A, Ownable {
     function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
         _safeMint(_msgSender(), _mintAmount);
     }
+
+    /// @notice Withdraw the remaining contract balance to the owner
+    function withdraw() public onlyOwner {
+        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
+        require(success);
+    }
 }
