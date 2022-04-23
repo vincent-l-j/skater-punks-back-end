@@ -9,23 +9,27 @@ contract CollectionNFT is ERC721A, Ownable {
 
     string public uriPrefix = "";
     string public uriSuffix = ".json";
+    string public hiddenMetadataUri;
 
     uint256 public cost;
     uint256 public maxSupply;
     uint256 public maxMintAmountPerTx;
 
     bool public paused = true;
+    bool public revealed = false;
 
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
         uint256 _cost,
         uint256 _maxSupply,
-        uint256 _maxMintAmountPerTx
+        uint256 _maxMintAmountPerTx,
+        string memory _hiddenMetadataUri
     ) ERC721A(_tokenName, _tokenSymbol) {
         cost = _cost;
         maxSupply = _maxSupply;
         maxMintAmountPerTx = _maxMintAmountPerTx;
+        hiddenMetadataUri = _hiddenMetadataUri;
     }
 
     /// @notice Check that the mint amount is valid
@@ -52,12 +56,22 @@ contract CollectionNFT is ERC721A, Ownable {
     /// @notice Return the token URI if the token exists
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
         require(_exists(_tokenId), "CollectionNFT: URI query for nonexistent token");
+
+        if (!revealed) {
+            return hiddenMetadataUri;
+        }
+
         return string(abi.encodePacked(uriPrefix, Strings.toString(_tokenId), uriSuffix));
     }
 
     /// @notice Set the cost
     function setCost(uint256 _cost) public onlyOwner {
         cost = _cost;
+    }
+
+    /// @notice Set the hidden metadata URI
+    function setHiddenMetadataUri(string memory _hiddenMetadataUri) public onlyOwner {
+        hiddenMetadataUri = _hiddenMetadataUri;
     }
 
     /// @notice Set the max mint amount per transaction
@@ -68,6 +82,11 @@ contract CollectionNFT is ERC721A, Ownable {
     /// @notice Pause or unpause the contract
     function setPaused(bool _state) public onlyOwner {
         paused = _state;
+    }
+
+    /// @notice Reveal or hide the collection
+    function setRevealed(bool _state) public onlyOwner {
+        revealed = _state;
     }
 
     /// @notice Set base URI

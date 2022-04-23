@@ -12,6 +12,7 @@ describe("Collection NFT", function () {
       Config.cost,
       Config.maxSupply,
       Config.maxMintAmountPerTx,
+      Config.hiddenMetadataUri,
     );
     await CollectionNFT.deployed();
 

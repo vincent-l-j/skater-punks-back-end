@@ -11,6 +11,7 @@ async function main() {
     Config.cost,
     Config.maxSupply,
     Config.maxMintAmountPerTx,
+    Config.hiddenMetadataUri,
   );
   await CollectionNFT.deployed();
   console.log("CollectionNFT deployed to:", CollectionNFT.address);
