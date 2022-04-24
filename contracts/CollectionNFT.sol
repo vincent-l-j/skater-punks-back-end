@@ -3,9 +3,13 @@ pragma solidity ^0.8.4;
 
 import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 
 contract CollectionNFT is ERC721A, Ownable {
+
+    bytes32 public merkleRoot;
+    mapping(address => bool) public whitelistClaimed;
 
     string public uriPrefix = "";
     string public uriSuffix = ".json";
@@ -17,6 +21,7 @@ contract CollectionNFT is ERC721A, Ownable {
 
     bool public paused = true;
     bool public revealed = false;
+    bool public whitelistMintEnabled = false;
 
     constructor(
         string memory _tokenName,
@@ -53,6 +58,18 @@ contract CollectionNFT is ERC721A, Ownable {
         _safeMint(_msgSender(), _mintAmount);
     }
 
+    /// @notice Mint when whitelist is enabled
+    function whitelistMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
+        // Verify whitelist requirements
+        require(whitelistMintEnabled, "CollectionNFT: The whitelist sale is not enabled!");
+        require(!whitelistClaimed[_msgSender()], "CollectionNFT: Address already claimed!");
+        bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));
+        require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), "CollectionNFT: Invalid proof!");
+
+        whitelistClaimed[_msgSender()] = true;
+        _safeMint(_msgSender(), _mintAmount);
+    }
+
     /// @notice Return the token URI if the token exists
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
         require(_exists(_tokenId), "CollectionNFT: URI query for nonexistent token");
@@ -79,6 +96,11 @@ contract CollectionNFT is ERC721A, Ownable {
         maxMintAmountPerTx = _maxMintAmountPerTx;
     }
 
+    /// @notice Set the merkleroot of whitelisted addresses
+    function setMerkleRoot(bytes32 _merkleRoot) public onlyOwner {
+        merkleRoot = _merkleRoot;
+    }
+
     /// @notice Pause or unpause the contract
     function setPaused(bool _state) public onlyOwner {
         paused = _state;
@@ -97,6 +119,11 @@ contract CollectionNFT is ERC721A, Ownable {
     /// @notice Set the file extension
     function setUriSuffix(string memory _uriSuffix) public onlyOwner {
         uriSuffix = _uriSuffix;
+    }
+
+    /// @notice Enable or disable whitelist minting
+    function setWhitelistMintEnabled(bool _state) public onlyOwner {
+        whitelistMintEnabled = _state;
     }
 
     /// @notice Withdraw the remaining contract balance to the owner
