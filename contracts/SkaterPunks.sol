@@ -6,18 +6,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 
-//   ______             __  __                        __      __                            __    __  ________  ________
-//  /      \           /  |/  |                      /  |    /  |                          /  \  /  |/        |/        |
-// /$$$$$$  |  ______  $$ |$$ |  ______    _______  _$$ |_   $$/   ______   _______        $$  \ $$ |$$$$$$$$/ $$$$$$$$/
-// $$ |  $$/  /      \ $$ |$$ | /      \  /       |/ $$   |  /  | /      \ /       \       $$$  \$$ |$$ |__       $$ |
-// $$ |      /$$$$$$  |$$ |$$ |/$$$$$$  |/$$$$$$$/ $$$$$$/   $$ |/$$$$$$  |$$$$$$$  |      $$$$  $$ |$$    |      $$ |
-// $$ |   __ $$ |  $$ |$$ |$$ |$$    $$ |$$ |        $$ | __ $$ |$$ |  $$ |$$ |  $$ |      $$ $$ $$ |$$$$$/       $$ |
-// $$ \__/  |$$ \__$$ |$$ |$$ |$$$$$$$$/ $$ \_____   $$ |/  |$$ |$$ \__$$ |$$ |  $$ |      $$ |$$$$ |$$ |         $$ |
-// $$    $$/ $$    $$/ $$ |$$ |$$       |$$       |  $$  $$/ $$ |$$    $$/ $$ |  $$ |      $$ | $$$ |$$ |         $$ |
-//  $$$$$$/   $$$$$$/  $$/ $$/  $$$$$$$/  $$$$$$$/    $$$$/  $$/  $$$$$$/  $$/   $$/       $$/   $$/ $$/          $$/
+//  $$$$$$\  $$\                 $$\                               $$$$$$$\                      $$\
+// $$  __$$\ $$ |                $$ |                              $$  __$$\                     $$ |
+// $$ /  \__|$$ |  $$\ $$$$$$\ $$$$$$\    $$$$$$\   $$$$$$\        $$ |  $$ |$$\   $$\ $$$$$$$\  $$ |  $$\  $$$$$$$\
+// \$$$$$$\  $$ | $$  |\____$$\\_$$  _|  $$  __$$\ $$  __$$\       $$$$$$$  |$$ |  $$ |$$  __$$\ $$ | $$  |$$  _____|
+//  \____$$\ $$$$$$  / $$$$$$$ | $$ |    $$$$$$$$ |$$ |  \__|      $$  ____/ $$ |  $$ |$$ |  $$ |$$$$$$  / \$$$$$$\
+// $$\   $$ |$$  _$$< $$  __$$ | $$ |$$\ $$   ____|$$ |            $$ |      $$ |  $$ |$$ |  $$ |$$  _$$<   \____$$\
+// \$$$$$$  |$$ | \$$\\$$$$$$$ | \$$$$  |\$$$$$$$\ $$ |            $$ |      \$$$$$$  |$$ |  $$ |$$ | \$$\ $$$$$$$  |
+//  \______/ \__|  \__|\_______|  \____/  \_______|\__|            \__|       \______/ \__|  \__|\__|  \__|\_______/
 
 
-contract CollectionNFT is ERC721A, Ownable {
+contract SkaterPunks is ERC721A, Ownable {
 
     bytes32 public merkleRoot;
     mapping(address => bool) public whitelistClaimed;
@@ -50,21 +49,21 @@ contract CollectionNFT is ERC721A, Ownable {
 
     /// @notice Check that the mint amount is valid
     modifier mintCompliance(uint256 _mintAmount) {
-        require(_mintAmount > 0, "CollectionNFT: Invalid mint amount");
-        require(_mintAmount <= maxMintAmountPerTx, "CollectionNFT: Max mint amount per transaction exceeded");
-        require(totalSupply() + _mintAmount <= maxSupply, "CollectionNFT: Max supply exceeded");
+        require(_mintAmount > 0, "SkaterPunks: Invalid mint amount");
+        require(_mintAmount <= maxMintAmountPerTx, "SkaterPunks: Max mint amount per transaction exceeded");
+        require(totalSupply() + _mintAmount <= maxSupply, "SkaterPunks: Max supply exceeded");
         _;
     }
 
     /// @notice Check that the payment amount is sufficient
     modifier mintPriceCompliance(uint256 _mintAmount) {
-        require(msg.value >= cost * _mintAmount, "CollectionNFT: Insufficient funds");
+        require(msg.value >= cost * _mintAmount, "SkaterPunks: Insufficient funds");
         _;
     }
 
     /// @notice Mint `_mintAmount` tokens for `msg.sender`
     function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
-        require(!paused, "CollectionNFT: The contract is paused");
+        require(!paused, "SkaterPunks: The contract is paused");
 
         _safeMint(_msgSender(), _mintAmount);
     }
@@ -72,10 +71,10 @@ contract CollectionNFT is ERC721A, Ownable {
     /// @notice Mint when whitelist is enabled
     function whitelistMint(uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable mintCompliance(_mintAmount) mintPriceCompliance(_mintAmount) {
         // Verify whitelist requirements
-        require(whitelistMintEnabled, "CollectionNFT: The whitelist sale is not enabled!");
-        require(!whitelistClaimed[_msgSender()], "CollectionNFT: Address already claimed!");
+        require(whitelistMintEnabled, "SkaterPunks: The whitelist sale is not enabled!");
+        require(!whitelistClaimed[_msgSender()], "SkaterPunks: Address already claimed!");
         bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));
-        require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), "CollectionNFT: Invalid proof!");
+        require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), "SkaterPunks: Invalid proof!");
 
         whitelistClaimed[_msgSender()] = true;
         _safeMint(_msgSender(), _mintAmount);
@@ -83,7 +82,7 @@ contract CollectionNFT is ERC721A, Ownable {
 
     /// @notice Return the token URI if the token exists
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
-        require(_exists(_tokenId), "CollectionNFT: URI query for nonexistent token");
+        require(_exists(_tokenId), "SkaterPunks: URI query for nonexistent token");
 
         if (!revealed) {
             return hiddenMetadataUri;

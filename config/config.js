@@ -1,8 +1,8 @@
 const { utils } = require("ethers");
 
 const Config = {
-  tokenName: "Collection NFT",
-  tokenSymbol: "CN",
+  tokenName: "Skater Punks",
+  tokenSymbol: "SP",
   cost: utils.parseEther("0.01"),
   maxSupply: 10000,
   maxMintAmountPerTx: 1,

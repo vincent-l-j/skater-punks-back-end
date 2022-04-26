@@ -3,10 +3,10 @@ const { ethers } = require("hardhat");
 
 const Config = require("../config/config");
 
-describe("Collection NFT", function () {
+describe("Skater Punks", function () {
   it("Should deploy the contract successfully", async function () {
-    const CollectionNFTFactory = await ethers.getContractFactory("CollectionNFT");
-    const CollectionNFT = await CollectionNFTFactory.deploy(
+    const SkaterPunksFactory = await ethers.getContractFactory("SkaterPunks");
+    const SkaterPunks = await SkaterPunksFactory.deploy(
       Config.tokenName,
       Config.tokenSymbol,
       Config.cost,
@@ -14,11 +14,11 @@ describe("Collection NFT", function () {
       Config.maxMintAmountPerTx,
       Config.hiddenMetadataUri,
     );
-    await CollectionNFT.deployed();
+    await SkaterPunks.deployed();
 
-    expect(await CollectionNFT.name()).to.equal(Config.tokenName);
-    expect(await CollectionNFT.symbol()).to.equal(Config.tokenSymbol);
-    expect(await CollectionNFT.cost()).to.equal(Config.cost);
-    expect(await CollectionNFT.maxSupply()).to.equal(Config.maxSupply);
+    expect(await SkaterPunks.name()).to.equal(Config.tokenName);
+    expect(await SkaterPunks.symbol()).to.equal(Config.tokenSymbol);
+    expect(await SkaterPunks.cost()).to.equal(Config.cost);
+    expect(await SkaterPunks.maxSupply()).to.equal(Config.maxSupply);
   });
 });

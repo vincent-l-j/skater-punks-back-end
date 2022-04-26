@@ -4,8 +4,8 @@ const Config = require("../config/config");
 
 async function main() {
   // We get the contract to deploy
-  const CollectionNFTFactory = await hre.ethers.getContractFactory("CollectionNFT");
-  const CollectionNFT = await CollectionNFTFactory.deploy(
+  const SkaterPunksFactory = await hre.ethers.getContractFactory("SkaterPunks");
+  const SkaterPunks = await SkaterPunksFactory.deploy(
     Config.tokenName,
     Config.tokenSymbol,
     Config.cost,
@@ -13,8 +13,8 @@ async function main() {
     Config.maxMintAmountPerTx,
     Config.hiddenMetadataUri,
   );
-  await CollectionNFT.deployed();
-  console.log("CollectionNFT deployed to:", CollectionNFT.address);
+  await SkaterPunks.deployed();
+  console.log("SkaterPunks deployed to:", SkaterPunks.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

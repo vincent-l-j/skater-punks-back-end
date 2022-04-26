@@ -1,8 +1,8 @@
 const { utils } = require("ethers");
 
 const ContractArgs = [
-  "Collection NFT",
-  "CN",
+  "Skater Punks",
+  "SP",
   utils.parseEther("0.01"),
   10000,
   1,
