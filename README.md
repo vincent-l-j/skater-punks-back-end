@@ -26,3 +26,7 @@ npx hardhat verify --constructor-args config/args.js DEPLOYED_CONTRACT_ADDRESS
 ```
 
 See the code of the deployed contract [here](https://rinkeby.etherscan.io/address/0x1591E3cDB0360ABDb764B6c9F8F61F9794fdf12c#code).
+
+The source code for the front end minting website is [here](https://github.com/vincent-l-j/skater-punks-front-end).
+
+Lastly, feel free to mint your own Skater Punk NFT on the website [here](https://skater-punks.herokuapp.com/).
